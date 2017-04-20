@@ -72,11 +72,6 @@ class JobOutputResource(MSJobResource):
         return {'updated_output': job.output}
 
 
-class JobInputResource(MSJobResource):
-    def get(self, job_id):
-        return {'input': Job.objects.get(pk=job_id).input}
-
-
 class JobDebugResource(MSJobResource):
     def get(self, job_id):
         return {

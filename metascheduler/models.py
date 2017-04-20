@@ -23,7 +23,6 @@ class Job(Document):
     descriptor = DictField(default={})
 
     output = ListField(StringField())
-    input = ListField(StringField())
 
     status = StringField(default=JobStatus.pending)
     last_update = DateTimeField(default=datetime.now)
@@ -42,7 +41,6 @@ class Job(Document):
             'job_id': str(self.pk),
             'status': self.status,
             'descriptor': self.descriptor,
-            'input': self.input,
             'output': self.output
         }
         try:
