@@ -2,15 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name='skygrid-metascheduler',
-    version='0.4.14',
+    version='0.4.15',
     url='https://github.com/skygrid/metascheduler',
     author='Alexander Baranov',
     author_email='sashab1@yandex-team.ru',
     packages=['metascheduler', 'metascheduler.resources'],
     description='Metascheduler',
     install_requires=[
-        "Flask==0.10.1",
-        "Flask-RESTful==0.2.12",
+        "Flask>=0.10.1",
+        "Flask-RESTful>=0.2.12",
         "Jinja2==2.7.3",
         "MarkupSafe==0.23",
         "WTForms==2.0.1",

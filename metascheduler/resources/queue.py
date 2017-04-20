@@ -65,7 +65,6 @@ class QueueResource(ExistingQueueResource):
         descriptor = request.json.get('descriptor')
         assert descriptor
 
-        input_files = request.json.get('input') or []
         callback = request.json.get('callback')
         replicate = request.json.get('multiply')  or 1
 
@@ -74,7 +73,6 @@ class QueueResource(ExistingQueueResource):
                 job_type=job_type,
                 descriptor=descriptor,
                 callback=callback,
-                input=input_files
             ).save()
             return {'job': job.to_dict()}
         else:
@@ -88,7 +86,6 @@ class QueueResource(ExistingQueueResource):
                                 "last_update": now,
                                 "descriptor" : descriptor,
                                 "callback" : callback,
-                                "input" : input_files
                             }
                         for _ in xrange(replicate)]
                     )
