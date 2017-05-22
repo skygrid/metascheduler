@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='skygrid-metascheduler',
-    version='0.5.0',
+    version='0.5.1',
     url='https://github.com/skygrid/metascheduler',
     author='Alexander Baranov',
     author_email='sashab1@yandex-team.ru',
