@@ -1,13 +1,9 @@
 import json
-import datetime
-
-import pymongo
-from flask import request, jsonify
-from flask.ext.restful import reqparse
-
-from ..models import *
-
+from datetime import datetime
+from flask import request
+from metascheduler.models import Queue, Job, JobStatus
 from api import MetaschedulerResource, ExistingQueueResource, queue_exists
+
 
 def queue_length(queue_name):
     return Job.objects(job_type=queue_name, status=JobStatus.pending).count()
@@ -34,10 +30,8 @@ class QueueManagementResource(MetaschedulerResource):
         if len(Queue.objects(job_type=queue_name)) > 0:
             raise Exception('Queue with same job_type already exists')
 
-
         queue = Queue(**queue_dict)
         queue.save()
-
 
         return {'queue': queue.to_dict()}
 
@@ -47,7 +41,14 @@ class QueueResource(ExistingQueueResource):
         pulled_job = Job._get_collection().find_and_modify(
             query={'job_type': job_type, 'status': JobStatus.pending},
             sort={'last_update': 1},
-            update={'$set': {'status': JobStatus.pulled}},
+            update={
+                '$set': {
+                    'status': JobStatus.pulled,
+                    'debug': {
+                        'pulled_by': str(request.remote_addr)
+                    }
+                }
+            },
             fields={'job_type': False, 'last_update': False},
             new=True
         )
@@ -57,16 +58,14 @@ class QueueResource(ExistingQueueResource):
         pulled_job['job_id'] = str(pulled_job['_id'])
         del pulled_job['_id']
 
-
-        return {'job': pulled_job }
-
+        return {'job': pulled_job}
 
     def post(self, job_type):
         descriptor = request.json.get('descriptor')
         assert descriptor
 
         callback = request.json.get('callback')
-        replicate = request.json.get('multiply')  or 1
+        replicate = request.json.get('multiply') or 1
 
         if replicate == 1:
             job = Job(
@@ -79,27 +78,22 @@ class QueueResource(ExistingQueueResource):
             now = datetime.now()
             return {
                 "job_ids": [
-                    str(r) for r in Job._get_collection().insert([
-                            {
-                                "job_type" : job_type,
-                                "status": JobStatus.pending,
-                                "last_update": now,
-                                "descriptor" : descriptor,
-                                "callback" : callback,
-                            }
-                        for _ in xrange(replicate)]
+                    str(r) for r in Job._get_collection().insert([{
+                        "job_type": job_type,
+                        "status": JobStatus.pending,
+                        "last_update": now,
+                        "descriptor": descriptor,
+                        "callback": callback,
+                    } for _ in xrange(replicate)]
                     )
                 ]
             }
-
 
     def delete(self, job_type):
         queue = Queue.objects.get(job_type=job_type)
         queue.delete()
 
         Job.objects(job_type=job_type).delete()
-
-
 
 
 class QueueInfoResource(MetaschedulerResource):

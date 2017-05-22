@@ -2,16 +2,16 @@ import json
 from datetime import datetime
 
 import gevent
-from gevent import thread, queue
 
 from flask import request
-from api import MetaschedulerResource, MSJobResource
+from api import MSJobResource
 
 import requests
 
-from ..models import Job, JobStatus
+from metascheduler.models import Job, JobStatus
 
 from flask import current_app
+
 
 def do_callback(job, timeout):
     if job.callback:
@@ -50,7 +50,11 @@ class JobStatusResource(MSJobResource):
         job.save()
 
         if job.callback:
-            gevent.spawn(do_callback, job, current_app.config["CALLBACK_TIMEOUT"]).start()
+            gevent.spawn(
+                do_callback,
+                job,
+                current_app.config["CALLBACK_TIMEOUT"]
+            ).start()
 
         return {'updated_status': job.status}
 
@@ -86,6 +90,10 @@ class JobDebugResource(MSJobResource):
         job.save()
 
         if job.callback:
-            gevent.spawn(do_callback, job, current_app.config["CALLBACK_TIMEOUT"]).start()
+            gevent.spawn(
+                do_callback,
+                job,
+                current_app.config["CALLBACK_TIMEOUT"]
+            ).start()
 
         return job.to_dict()

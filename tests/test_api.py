@@ -206,8 +206,10 @@ class QueueTest(BasicQueueTest):
 
     def test_job_input_output(self):
         TEST_OBJ = {
-            "descriptor": {"hello": "world"},
-            "input": ['root://blah/blah/blah/test.file', 'moosefs://1/2/3/file.txt']
+            "descriptor": {
+                "hello": "world",
+                "input": ['root://blah/blah/blah/test.file', 'moosefs://1/2/3/file.txt']
+            }
         }
 
         r = requests.post(
@@ -220,7 +222,7 @@ class QueueTest(BasicQueueTest):
         self.assertEqual(result_create['success'], True)
         self.assertEqual(result_create['job']['descriptor'], TEST_OBJ['descriptor'])
         self.assertEqual(result_create['job']['status'], "pending")
-        self.assertEqual(result_create['job']['input'], TEST_OBJ['input'])
+        self.assertEqual(result_create['job']['descriptor']['input'], TEST_OBJ['descriptor']['input'])
 
         r = requests.get(self.queue_url)
         result_get = r.json()
@@ -228,7 +230,8 @@ class QueueTest(BasicQueueTest):
         self.assertEqual(result_get['success'], True)
         self.assertEqual(result_get['job']['descriptor'], TEST_OBJ['descriptor'])
         self.assertEqual(result_get['job']['status'], "pulled")
-        self.assertEqual(result_create['job']['input'], TEST_OBJ['input'])
+        self.assertTrue('pulled_by' in result_get['job']['debug'])
+        self.assertEqual(result_create['job']['descriptor']['input'], TEST_OBJ['descriptor']['input'])
 
 
         OUTPUT_URIS = ['some://output/uri/1', 'another://output/uri/2']

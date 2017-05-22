@@ -1,17 +1,21 @@
-import os
-import time
 from datetime import datetime
 
-from mongoengine import *
-
+from mongoengine import (
+    Document,
+    StringField,
+    DictField,
+    DateTimeField,
+    FloatField,
+    BooleanField,
+    ListField
+)
 from flask import current_app
 
-# Job model and stuff used
 
-class JobStatus:
+class JobStatus(object):
     pending = "pending"
     running = "running"
-    failed  = "failed"
+    failed = "failed"
     completed = "completed"
     pulled = "pulled"
 
@@ -64,7 +68,7 @@ class Queue(Document):
     use_timeout = BooleanField(default=False, required=True)
 
     def to_dict(self):
-        d =  {
+        d = {
             "name": self.job_type,
             "use_timeout": self.use_timeout,
         }
