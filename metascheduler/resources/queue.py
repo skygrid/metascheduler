@@ -38,8 +38,14 @@ class QueueManagementResource(MetaschedulerResource):
 
 class QueueResource(ExistingQueueResource):
     def get(self, job_type):
+        cpu_avail = int(request.args.get("cpu_available", 1))
+
         pulled_job = Job._get_collection().find_and_modify(
-            query={'job_type': job_type, 'status': JobStatus.pending},
+            query={
+                'job_type': job_type,
+                'status': JobStatus.pending,
+                'descriptor.container.cpu_needed': {'$lte': cpu_avail}
+            },
             sort={'last_update': 1},
             update={
                 '$set': {
