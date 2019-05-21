@@ -1,6 +1,6 @@
 Flask==0.10.1
 Flask-RESTful==0.2.12
-Jinja2==2.7.3
+Jinja2
 MarkupSafe==0.23
 WTForms==2.0.1
 Werkzeug==0.9.6
@@ -11,7 +11,7 @@ itsdangerous==0.24
 mongoengine==0.8.7
 pymongo==2.7.2
 pytz==2014.4
-requests==2.3.0
+requests
 six==1.7.3
 wsgiref==0.1.2
 pika==0.9.14
