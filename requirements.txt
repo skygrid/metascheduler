@@ -1,4 +1,4 @@
-Flask==0.10.1
+Flask
 Flask-RESTful==0.2.12
 Jinja2
 MarkupSafe==0.23
