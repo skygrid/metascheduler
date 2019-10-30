@@ -1,9 +1,9 @@
 Flask
-Flask-RESTful==0.2.12
+Flask-RESTful
 Jinja2
-MarkupSafe==0.23
-WTForms==2.0.1
-Werkzeug==0.9.6
+MarkupSafe
+WTForms
+Werkzeug
 aniso8601==0.83
 argparse==1.2.1
 flask-mongoengine==0.7.1
